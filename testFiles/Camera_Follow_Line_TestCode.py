@@ -72,4 +72,3 @@ if __name__ == "__main__":
     rawCapture = PiRGBArray(camera, size=(192, 112))
     sleep(0.1)
     followLine(camera, rawCapture)
-    GPIO.cleanup()
