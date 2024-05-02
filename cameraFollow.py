@@ -4,6 +4,7 @@ import cv2
 import picamera
 from picamera.array import PiRGBArray
 from smbus import SMBus
+
 """
 # constants
 
@@ -29,9 +30,9 @@ SPEED_90 = 29444
 
 SPEED = SPEED_30
 
+
 # classes
 # Motor class
-
 class Motor:
     def __init__(self, reg, pin):
         self.reg = reg
@@ -54,56 +55,82 @@ class Motor:
     def set_forwards(self):
         self.direction = 1
 
+
+# Car class
+class Car:
+    def __init__(self, left_front, left_back, right_front, right_back):
+        self.left_front = left_front
+        self.left_back = left_back
+        self.right_front = right_front
+        self.right_back = right_back
+
+    def forward(self, power):
+        self.left_front.set_forwards()
+        self.left_back.set_forwards()
+        self.right_front.set_forwards()
+        self.right_back.set_forwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def backward(self, power):
+        self.left_front.set_backwards()
+        self.left_back.set_backwards()
+        self.right_front.set_backwards()
+        self.right_back.set_backwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def turn_left(self, power):
+        self.left_front.set_backwards()
+        self.left_back.set_backwards()
+        self.right_front.set_forwards()
+        self.right_back.set_forwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def turn_right(self, power):
+        self.left_front.set_forwards()
+        self.left_back.set_forwards()
+        self.right_front.set_backwards()
+        self.right_back.set_backwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def stop(self):
+        self.left_front.stop()
+        self.left_back.stop()
+        self.right_front.stop()
+        self.right_back.stop()
+
+
 # Functions to control the movement of the robot
-def forward(power):
-    left_front.set_forwards()
-    left_back.set_forwards()
-    right_front.set_forwards()
-    right_back.set_forwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
+def forward(car, power):
+    car.forward(power)
 
 
-def backward(power):
-    left_front.set_backwards()
-    left_back.set_backwards()
-    right_front.set_backwards()
-    right_back.set_backwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
+def backward(car, power):
+    car.backward(power)
 
 
-def turn_left(power):
-    left_front.set_backwards()
-    left_back.set_backwards()
-    right_front.set_forwards()
-    right_back.set_forwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
+def turn_left(car, power):
+    car.turn_left(power)
 
 
-def turn_right(power):
-    left_front.set_forwards()
-    left_back.set_forwards()
-    right_front.set_backwards()
-    right_back.set_backwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
+def turn_right(car, power):
+    car.turn_right(power)
 
 
-def stop():
-    left_front.set_power(0)
-    left_back.set_power(0)
-    right_front.set_power(0)
-    right_back.set_power(0)
+def stop(car):
+    car.stop()
+
 
 # Function to initialize the I2C bus
 def initBus():
@@ -131,81 +158,88 @@ def initBus():
     bus.write_word_data(20, 68, 65039)
     bus.write_word_data(20, 64, 24065)
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-#
-initBus()
 
-left_front = Motor(45, 23)
-left_back = Motor(40, 13)
-right_front = Motor(44, 24)
-right_back = Motor(41, 20)
+# main
+def __main__():
+    # Initialize GPIO
+    GPIO.setmode(GPIO.BCM)
+    GPIO.setwarnings(False)
+    # Initialize I2C bus
+    initBus()
+    # Initialize motors
+    left_front = Motor(45, 23)
+    left_back = Motor(40, 13)
+    right_front = Motor(44, 24)
+    right_back = Motor(41, 20)
+    # initialize car
+    car = Car(left_front, left_back, right_front, right_back)
+    # Initialize camera
+    camera = picamera.PiCamera()
+    camera.resolution = (192, 112)
+    camera.framerate = 30
+    rawCapture = PiRGBArray(camera, size=(192, 112))
+    sleep(0.1)
+    followLine(camera, rawCapture, car)
+    GPIO.cleanup()
 
-# Initialize camera
-camera = picamera.PiCamera()
-camera.resolution = (192, 112)
-camera.framerate = 30
-rawCapture = PiRGBArray(camera, size=(192, 112))
-sleep(0.1)
 
-# Loop over all frames captured by camera indefinitely
-for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
+def followLine(camera, rawCapture, car):
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-    # Display camera input
-    image = frame.array
-    
-    height, width = image.shape[:2]
-    roi_start = height // 4
-    roi_end = 3 * height // 4
-    image = image[roi_start:roi_end, :]
-    
-    cv2.imshow('img', image)
+        # Display camera input
+        image = frame.array
 
-    # Create key to break for loop
-    key = cv2.waitKey(1) & 0xFF
+        height, width = image.shape[:2]
+        roi_start = height // 4
+        roi_end = 3 * height // 4
+        image = image[roi_start:roi_end, :]
 
-    # convert to grayscale, gaussian blur, and threshold
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
+        cv2.imshow('img', image)
 
-    # Erode to eliminate noise, Dilate to restore eroded parts of image
-    mask = cv2.erode(thresh1, None, iterations=2)
-    mask = cv2.dilate(mask, None, iterations=2)
-    
-    cv2.imshow('mask',mask)
+        # Create key to break for loop
+        key = cv2.waitKey(1) & 0xFF
 
-    # Find all contours in frame
-    contours, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
+        # convert to grayscale, gaussian blur, and threshold
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
 
-    # Find x-axis centroid of largest contour and cut power to appropriate motor
-    # to recenter camera on centroid.
-    # This control algorithm was written referencing guide:
-    # Author: Einsteinium Studios
-    # Availability: http://einsteiniumstudios.com/beaglebone-opencv-line-following-robot.html
-    if len(contours) > 0:
-        # Find largest contour area and image moments
-        c = max(contours, key=cv2.contourArea)
-        M = cv2.moments(c)
+        # Erode to eliminate noise, Dilate to restore eroded parts of image
+        mask = cv2.erode(thresh1, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
 
-        # Find x-axis centroid using image moments
-        cx = int(M['m10'] / M['m00'])
+        cv2.imshow('mask', mask)
 
-        if cx >= 130:
-            turn_right(SPEED_30)
-            
-        if cx < 130 and cx > 60:
-            forward(SPEED_30)
+        # Find all contours in frame
+        contours, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
-        if cx <= 60:
-            turn_left(SPEED_30)
+        # Find x-axis centroid of largest contour and cut power to appropriate motor
+        # to recenter camera on centroid.
+        if len(contours) > 0:
+            # Find largest contour area and image moments
+            c = max(contours, key=cv2.contourArea)
+            M = cv2.moments(c)
 
-    if key == ord("q"):
-        break
+            # Find x-axis centroid using image moments
+            cx = int(M['m10'] / M['m00'])
 
-    rawCapture.truncate(0)
+            if cx >= 130:
+                turn_right(car, SPEED_30)
 
-stop()
+            if cx < 130 and cx > 60:
+                forward(car, SPEED_30)
 
-GPIO.cleanup()
+            if cx <= 60:
+                turn_left(car, SPEED_30)
 
+        if key == ord("q"):
+            stop(car)
+            break
+
+        rawCapture.truncate(0)
+
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    __main__()
