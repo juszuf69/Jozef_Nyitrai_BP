@@ -13,6 +13,8 @@ file_name = LEFT_TURN
 # Capture a frame from the camera
 frame = cv2.imread(file_name)
 
+print("frame read")
+
 # Display the original image
 cv2.imshow('Original Image', frame)
 
@@ -44,3 +46,6 @@ if len(contours) > 0:
 
     # Display the centroid
     cv2.imshow('Centroid', frame)
+
+cv2.waitKey(0)
+cv2.destroyAllWindows()
