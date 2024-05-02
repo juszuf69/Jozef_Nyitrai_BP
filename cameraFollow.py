@@ -224,13 +224,13 @@ def followLine(camera, rawCapture, car):
             cx = int(M['m10'] / M['m00'])
 
             if cx >= 130:
-                turn_right(car, SPEED_30)
+                turn_right(car, SPEED)
 
             if cx < 130 and cx > 60:
-                forward(car, SPEED_30)
+                forward(car, SPEED)
 
             if cx <= 60:
-                turn_left(car, SPEED_30)
+                turn_left(car, SPEED)
 
         if key == ord("q"):
             stop(car)
