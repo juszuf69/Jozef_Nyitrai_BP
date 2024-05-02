@@ -13,7 +13,10 @@ file_name = LEFT_TURN
 # Capture a frame from the camera
 frame = cv2.imread(file_name)
 
-print("frame read")
+height, width = frame.shape[:2]
+roi_start = height // 4
+roi_end = 3 * height // 4
+frame = frame[roi_start:roi_end, :]
 
 # Display the original image
 cv2.imshow('Original Image', frame)
