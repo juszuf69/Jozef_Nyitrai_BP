@@ -1,57 +1,75 @@
+from time import *
+import RPi.GPIO as GPIO
 import cv2
-import numpy as np
 import picamera
-import time
-
-# Set up the camera
-camera = picamera.PiCamera()
-camera.resolution = (320, 240)
-camera.framerate = camera.MAX_FRAMERATE
-
-# Create a VideoWriter object to write the video frames
+from picamera.array import PiRGBArray
+from smbus import SMBus
 
 
-# Start the camera preview
-camera.start_preview()
+def followLine(camera, rawCapture):
+    for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
 
-# Define the minimum and maximum values for the HSV color space for black
-lower_black = np.array([0, 0, 0])
-upper_black = np.array([180, 255, 46])
+        # Display camera input
+        image = frame.array
 
-while True:
-    # Capture a frame from the camera
-    camera.capture('frame.jpg')
-    frame = cv2.imread('frame.jpg')
-    frame_none = cv2.imread('frame.jpg')
+        height, width = image.shape[:2]
+        roi_start = height // 4
+        roi_end = 3 * height // 4
+        image = image[roi_start:roi_end, :]
 
-    # Convert the frame to HSV color space
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
+        cv2.imshow('img', image)
 
-    # Threshold the HSV image to get a binary image of the black line
-    mask = cv2.inRange(hsv, lower_black, upper_black)
+        # Create key to break for loop
+        key = cv2.waitKey(1) & 0xFF
 
-    # Find contours in the thresholded frame
-    contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # convert to grayscale, gaussian blur, and threshold
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        blur = cv2.GaussianBlur(gray, (5, 5), 0)
+        ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
 
-    frame_BW = np.zeros_like(frame)
-    # Draw the contours on the frame
-    cv2.drawContours(frame_BW, contours, -1, (255, 255, 255), -1)
-    cv2.drawContours(frame, contours, -1, (255, 255, 255), -1)
+        # Erode to eliminate noise, Dilate to restore eroded parts of image
+        mask = cv2.erode(thresh1, None, iterations=2)
+        mask = cv2.dilate(mask, None, iterations=2)
 
-    # Write the frame to the video file
+        cv2.imshow('mask', mask)
 
-    # Show the frame
-    cv2.imshow('Camera', frame_none)
-    cv2.imshow('Camera + mask',frame)
-    cv2.imshow('Frame B/W',frame_BW)
+        # Find all contours in frame
+        contours, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
-    # Break the loop if the user presses the 'q' key
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
+        # Find x-axis centroid of largest contour and cut power to appropriate motor
+        # to recenter camera on centroid.
+        if len(contours) > 0:
+            # Find largest contour area and image moments
+            c = max(contours, key=cv2.contourArea)
+            M = cv2.moments(c)
 
-# Release the camera and the VideoWriter objects
-camera.stop_preview()
-camera.close()
+            # Find x-axis centroid using image moments
+            cx = int(M['m10'] / M['m00'])
 
-# Close all OpenCV windows
-cv2.destroyAllWindows()
+            if cx >= 130:
+                print("turn right")
+
+            if 130 > cx > 60:
+                print("forward")
+
+            if cx <= 60:
+                print("turn left")
+
+        if key == ord("q"):
+            print("Stopping")
+            break
+
+        rawCapture.truncate(0)
+
+    cv2.destroyAllWindows()
+
+
+if __name__ == "__main__":
+    # Initialize camera
+    camera = picamera.PiCamera()
+    camera.resolution = (192, 112)
+    camera.framerate = 30
+    rawCapture = PiRGBArray(camera, size=(192, 112))
+    sleep(0.1)
+    followLine(camera, rawCapture)
+    GPIO.cleanup()
