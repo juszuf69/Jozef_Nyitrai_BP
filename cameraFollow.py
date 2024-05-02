@@ -1,11 +1,10 @@
-"""
-import cv2
-import numpy as np
-import picamera
 from time import *
-import RPI.GPIO as GPIO
+import RPi.GPIO as GPIO
+import cv2
+import picamera
+from picamera.array import PiRGBArray
 from smbus import SMBus
-
+"""
 # constants
 
 #       MOTORS      SMBus regs      addr=20
@@ -27,6 +26,8 @@ SPEED_60 = 48899
 SPEED_70 = 64259
 SPEED_80 = 14084
 SPEED_90 = 29444
+
+SPEED = SPEED_30
 
 # classes
 # Motor class
@@ -52,37 +53,6 @@ class Motor:
 
     def set_forwards(self):
         self.direction = 1
-"""
-# functions
-# Function to get the leftmost and rightmost points of the biggest contour in picture
-def get_left_right_points(contour):
-    # Initialize leftmost and rightmost points with extreme values
-    leftmost = tuple(contour[0][0])
-    rightmost = tuple(contour[0][0])
-
-    # Iterate through all points in the contour to find leftmost and rightmost
-    for point in contour:
-        point = tuple(point[0])  # Convert to tuple for easier comparison
-
-        # Update leftmost point if current point is more left
-        if point[0] < leftmost[0]:
-            leftmost = point
-
-        # Update rightmost point if current point is more right
-        if point[0] > rightmost[0]:
-            rightmost = point
-
-    return leftmost, rightmost
-"""
-
-from time import *
-
-import RPi.GPIO as GPIO
-import cv2
-import picamera
-from picamera.array import PiRGBArray
-from smbus import SMBus
-
 
 # Functions to control the movement of the robot
 def forward(power):
@@ -160,105 +130,6 @@ def initBus():
     bus.write_word_data(20, 68, 44804)
     bus.write_word_data(20, 68, 65039)
     bus.write_word_data(20, 64, 24065)
-"""
-# Function to follow the black line
-def followLine(speed):
-    # Set up the camera
-    camera = picamera.PiCamera()
-    camera.resolution = (640, 480)
-    camera.framerate = camera.MAX_FRAMERATE
-
-    # Start the camera preview
-    camera.start_preview()
-    time.sleep(0.5)
-
-    # Define the minimum and maximum values for the HSV color space for black
-    lower_black = np.array([0, 0, 0])
-    upper_black = np.array([180, 255, 46])
-
-    while True:
-        # Capture a frame from the camera
-        camera.capture('frame.jpg')
-        frame = cv2.imread('frame.jpg')
-
-        # Convert the frame to HSV color space
-        hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
-        # Threshold the HSV image to get a binary image of the black line
-        mask = cv2.inRange(hsv, lower_black, upper_black)
-
-        # Find contours in the thresholded frame
-        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        frame_BW = np.zeros_like(frame)
-        # Draw the contours on the frame
-        cv2.drawContours(frame_BW, contours, -1, (255, 255, 255), -1)
-        cv2.imwrite('frame2.jpg', frame_BW)
-        frame_BW = cv2.imread('frame2.jpg', cv2.IMREAD_GRAYSCALE)
-
-        height, width = frame_BW.shape[:2]
-        roi_start = height // 4
-        roi_end = 3 * height // 4
-        roi_pic = frame_BW[roi_start:roi_end, :]
-
-        # Preprocessing
-        _, thresh = cv2.threshold(roi_pic, 127, 255, cv2.THRESH_BINARY)
-
-        # Find contours
-        contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-        if contours:
-            largest_contour = max(contours, key=cv2.contourArea)
-            left_most_p, right_most_p = get_left_right_points(largest_contour)
-
-            # Example decision making based on points in countour
-            if left_most_p[0] < 200:
-                turn_left(speed)
-            elif right_most_p[0] > 440:
-                turn_right(speed)
-            else:
-                forward(speed)
-        else:
-            stop()
-
-        # Break the loop if the user presses the 'q' key
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
-
-
-    # Release the camera
-    camera.stop_preview()
-    camera.close()
-
-    # Close all OpenCV windows
-    cv2.destroyAllWindows()
-
-# main
-
-if __name__ == '__main__':
-    GPIO.setmode(GPIO.BCM)
-    GPIO.setwarnings(False)
-
-    initBus()
-
-    left_front = Motor(45, 23)
-    left_back = Motor(40, 13)
-    right_front = Motor(44, 24)
-    right_back = Motor(41, 20)
-
-    followLine(SPEED_20)
-"""
-
-# Gregory Mueth
-# 2635999
-# EEL 4660 Robotics Systems
-# Fall 2017
-
-# line-follower.py
-
-# A line following robot for Robotics Systems final project
-# Coded using Python 2.7.13 and OpenCV 3.3 for a Raspberry Pi 3B running Raspbian
-# Uses Raspberry Pi camera module v2
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -337,3 +208,4 @@ for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=
 stop()
 
 GPIO.cleanup()
+
