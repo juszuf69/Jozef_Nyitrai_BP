@@ -39,12 +39,14 @@ cv2.imshow('Processed Image', mask)
 # Find all contours in frame
 contours, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
-cv2.imshow('Contours', contours)
-
 # Find largest contour and display the centroid
 if len(contours) > 0:
     # Find largest contour area and image moments
     c = max(contours, key=cv2.contourArea)
+
+    # display the largest contour
+    cv2.drawContours(frame, [c], -1, (0, 255, 0), 2)
+
     M = cv2.moments(c)
 
     # Find x-axis centroid using image moments
