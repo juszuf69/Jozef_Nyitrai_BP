@@ -82,7 +82,7 @@ def TOneMotor(motor, motorName):
     motor.stop()
     sleep(1)
     print(motorName + " Backwards")
-    motor.set_backwards();
+    motor.set_backwards()
     motor.set_power(SPEED_20)
     sleep(1)
     print(motorName + " Stop")
@@ -127,6 +127,43 @@ def TAllMotor(speed):
     print("All Motors Finished with speed " + str(speed))
 
 
+def TAllMotorDifferentDirection(speed):
+    print("All Motors Starting with speed " + str(speed))
+    sleep(1)
+    print("All Motors Forwards")
+    left_front.set_forwards()
+    left_back.set_backwards()
+    right_front.set_forwards()
+    right_back.set_backwards()
+    left_front.set_power(speed)
+    left_back.set_power(speed)
+    right_front.set_power(speed)
+    right_back.set_power(speed)
+    sleep(1)
+    print("All Motors Stop")
+    left_front.stop()
+    left_back.stop()
+    right_front.stop()
+    right_back.stop()
+    sleep(1)
+    print("All Motors Backwards")
+    left_front.set_backwards()
+    left_back.set_forwards()
+    right_front.set_backwards()
+    right_back.set_forwards()
+    left_front.set_power(speed)
+    left_back.set_power(speed)
+    right_front.set_power(speed)
+    right_back.set_power(speed)
+    sleep(1)
+    print("All Motors Stop")
+    left_front.stop()
+    left_back.stop()
+    right_front.stop()
+    right_back.stop()
+    print("All Motors Finished with speed " + str(speed))
+
+
 if __name__ == '__main__':
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
@@ -138,11 +175,17 @@ if __name__ == '__main__':
     right_front = Motor(44, 24)
     right_back = Motor(41, 20)
 
+    # Test all motors individually
     TOneMotor(left_front, "Left Front")
     TOneMotor(left_back, "Left Back")
     TOneMotor(right_front, "Right Front")
     TOneMotor(right_back, "Right Back")
 
+    # Test motor speeds
     TAllMotor(SPEED_40)
     TAllMotor(SPEED_80)
+
+    # Test motors in different directions
+    TAllMotorDifferentDirection(SPEED_40)
+
     print("All Tests Finished")
