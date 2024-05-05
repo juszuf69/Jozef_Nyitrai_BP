@@ -71,64 +71,62 @@ def initBus(bus):
 
 
 def T1(motor, motorName):
-    print(motorName + " Starting")
     sleep(1)
-    print(motorName + " Forwards")
+    # set motor direction forward
     motor.set_forwards()
+    # start motor
     motor.set_power(SPEED_20)
     sleep(1)
-    print(motorName + " Stop")
+    # stop motor
     motor.stop()
     sleep(1)
-    print(motorName + " Backwards")
+    # set motor direction backward
     motor.set_backwards()
+    # start motor
     motor.set_power(SPEED_20)
     sleep(1)
-    print(motorName + " Stop")
+    # stop motor
     motor.stop()
-    print(motorName + " Finished")
 
 
 def T2(speed):
-    print("All Motors Starting with speed " + str(speed))
     sleep(1)
-    print("All Motors Forwards")
+    # set all motors forward
     left_front.set_forwards()
     left_back.set_forwards()
     right_front.set_forwards()
     right_back.set_forwards()
+    # start all motors
     left_front.set_power(speed)
     left_back.set_power(speed)
     right_front.set_power(speed)
     right_back.set_power(speed)
     sleep(1)
-    print("All Motors Stop")
+    # stop all motors
     left_front.stop()
     left_back.stop()
     right_front.stop()
     right_back.stop()
-    print("All Motors Finished with speed " + str(speed))
 
 
 def T3(speed):
-    print("All Motors Starting with speed " + str(speed))
     sleep(1)
-    print("All Motors Different Directions")
+    # set all motors different directions
     left_front.set_forwards()
     left_back.set_backwards()
     right_front.set_forwards()
     right_back.set_backwards()
+    # start all motors
     left_front.set_power(speed)
     left_back.set_power(speed)
     right_front.set_power(speed)
     right_back.set_power(speed)
     sleep(1)
-    print("All Motors Stop")
+    # stop all motors
     left_front.stop()
     left_back.stop()
     right_front.stop()
     right_back.stop()
-    print("All Motors Finished with speed " + str(speed))
 
 
 if __name__ == '__main__':
