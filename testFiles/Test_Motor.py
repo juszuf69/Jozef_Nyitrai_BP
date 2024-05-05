@@ -87,7 +87,7 @@ def TOneMotor(motor,motorName):
     print(motorName + " Finished")
 
 def TAllMotor(speed):
-    print("All Motors Starting")
+    print("All Motors Starting with speed " + str(speed))
     sleep(1)
     print("All Motors Forwards")
     left_front.set_forwards()
@@ -120,7 +120,7 @@ def TAllMotor(speed):
     left_back.stop()
     right_front.stop()
     right_back.stop()
-    print("All Motors Finished")
+    print("All Motors Finished with speed " + str(speed))
 
 
 if __name__ == '__main__':
