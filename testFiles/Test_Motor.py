@@ -133,28 +133,22 @@ if __name__ == '__main__':
     # Set up GPIO
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-
     # Initialize the bus to avoid errors
     bus = SMBus(1)
     sleep(1)
     initBus(bus)
-
+    # Motor declarations
     left_front = Motor(45, 23, bus)
     left_back = Motor(40, 13, bus)
     right_front = Motor(44, 24, bus)
     right_back = Motor(41, 20, bus)
-
     # Test all motors individually
     T1(left_front)
     T1(left_back)
     T1(right_front)
     T1(right_back)
-
     # Test motor speeds
     T2(SPEED_40)
     T2(SPEED_80)
-
     # Test motors in different directions
     T3(SPEED_40)
-
-    print("All Tests Finished")
