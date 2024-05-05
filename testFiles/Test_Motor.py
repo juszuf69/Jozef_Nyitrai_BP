@@ -21,6 +21,8 @@ SPEED_70 = 64259
 SPEED_80 = 14084
 SPEED_90 = 29444
 
+HAT_ADDR = 20
+
 
 class Motor:
     def __init__(self, reg, pin, bus):
@@ -32,10 +34,10 @@ class Motor:
 
     def set_power(self, power):
         GPIO.output(self.pin, self.direction)
-        self.bus.write_word_data(20, self.reg, power)
+        self.bus.write_word_data(HAT_ADDR, self.reg, power)
 
     def stop(self):
-        self.bus.write_word_data(20, self.reg, 0)
+        self.bus.write_word_data(HAT_ADDR, self.reg, 0)
 
     def set_backwards(self):
         self.direction = 0
@@ -68,7 +70,7 @@ def initBus(bus):
     bus.write_word_data(20, 64, 24065)
 
 
-def T1_One_Motor(motor, motorName):
+def T1(motor, motorName):
     print(motorName + " Starting")
     sleep(1)
     print(motorName + " Forwards")
@@ -87,7 +89,7 @@ def T1_One_Motor(motor, motorName):
     print(motorName + " Finished")
 
 
-def T2_All_Motors(speed):
+def T2(speed):
     print("All Motors Starting with speed " + str(speed))
     sleep(1)
     print("All Motors Forwards")
@@ -108,7 +110,7 @@ def T2_All_Motors(speed):
     print("All Motors Finished with speed " + str(speed))
 
 
-def T3_All_Motors_Different_Direction(speed):
+def T3(speed):
     print("All Motors Starting with speed " + str(speed))
     sleep(1)
     print("All Motors Different Directions")
@@ -145,16 +147,16 @@ if __name__ == '__main__':
     right_back = Motor(41, 20, bus)
 
     # Test all motors individually
-    T1_One_Motor(left_front, "Left Front")
-    T1_One_Motor(left_back, "Left Back")
-    T1_One_Motor(right_front, "Right Front")
-    T1_One_Motor(right_back, "Right Back")
+    T1(left_front, "Left Front")
+    T1(left_back, "Left Back")
+    T1(right_front, "Right Front")
+    T1(right_back, "Right Back")
 
     # Test motor speeds
-    T2_All_Motors(SPEED_40)
-    T2_All_Motors(SPEED_80)
+    T2(SPEED_40)
+    T2(SPEED_80)
 
     # Test motors in different directions
-    T3_All_Motors_Different_Direction(SPEED_40)
+    T3(SPEED_40)
 
     print("All Tests Finished")
