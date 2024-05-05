@@ -70,7 +70,7 @@ def initBus(bus):
     bus.write_word_data(20, 64, 24065)
 
 
-def T1(motor, motorName):
+def T1(motor):
     sleep(1)
     # set motor direction forward
     motor.set_forwards()
@@ -145,10 +145,10 @@ if __name__ == '__main__':
     right_back = Motor(41, 20, bus)
 
     # Test all motors individually
-    T1(left_front, "Left Front")
-    T1(left_back, "Left Back")
-    T1(right_front, "Right Front")
-    T1(right_back, "Right Back")
+    T1(left_front)
+    T1(left_back)
+    T1(right_front)
+    T1(right_back)
 
     # Test motor speeds
     T2(SPEED_40)
