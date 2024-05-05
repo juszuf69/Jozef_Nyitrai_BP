@@ -165,7 +165,8 @@ def __main__():
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
     # Initialize I2C bus
-    initBus()
+    #initBus()
+    #sleep(1)
     # Initialize motors
     left_front = Motor(45, 23)
     left_back = Motor(40, 13)

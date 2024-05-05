@@ -176,7 +176,7 @@ if __name__ == '__main__':
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    initBus()
+    #initBus()
 
     left_front = Motor(45, 23)
     left_back = Motor(40, 13)

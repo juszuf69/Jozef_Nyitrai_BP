@@ -1,5 +1,5 @@
 import RPi.GPIO as GPIO
-from smbus import SMBus
+from smbus2 import SMBus
 from time import sleep
 
 #       MOTORS      SMBus regs      addr=20
