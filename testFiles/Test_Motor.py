@@ -23,20 +23,19 @@ SPEED_90 = 29444
 
 
 class Motor:
-    def __init__(self, reg, pin):
+    def __init__(self, reg, pin, bus):
         self.reg = reg
         self.pin = pin
+        self.bus = bus
         self.direction = 1
         GPIO.setup(self.pin, GPIO.OUT)
 
     def set_power(self, power):
-        bus = SMBus(1)
         GPIO.output(self.pin, self.direction)
-        bus.write_word_data(20, self.reg, power)
+        self.bus.write_word_data(20, self.reg, power)
 
     def stop(self):
-        bus = SMBus(1)
-        bus.write_word_data(20, self.reg, 0)
+        self.bus.write_word_data(20, self.reg, 0)
 
     def set_backwards(self):
         self.direction = 0
@@ -45,14 +44,12 @@ class Motor:
         self.direction = 1
 
 
-def initBus():
+def initBus(bus):
     GPIO.setup(21, GPIO.OUT)
     GPIO.output(21, 0)
     sleep(0.01)
     GPIO.output(21, 1)
     sleep(0.01)
-    bus = SMBus(1)
-    sleep(1)
     bus.write_word_data(20, 67, 44804)
     bus.write_word_data(20, 71, 44804)
     bus.write_word_data(20, 67, 44804)
@@ -138,12 +135,14 @@ if __name__ == '__main__':
     GPIO.setwarnings(False)
 
     # Initialize the bus to avoid errors
-    initBus()
+    bus = SMBus(1)
+    sleep(1)
+    initBus(bus)
 
-    left_front = Motor(45, 23)
-    left_back = Motor(40, 13)
-    right_front = Motor(44, 24)
-    right_back = Motor(41, 20)
+    left_front = Motor(45, 23, bus)
+    left_back = Motor(40, 13, bus)
+    right_front = Motor(44, 24, bus)
+    right_back = Motor(41, 20, bus)
 
     # Test all motors individually
     T1_One_Motor(left_front, "Left Front")
