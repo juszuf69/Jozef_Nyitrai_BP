@@ -21,6 +21,7 @@ SPEED_70 = 64259
 SPEED_80 = 14084
 SPEED_90 = 29444
 
+
 class Motor:
     def __init__(self, reg, pin):
         self.reg = reg
@@ -42,6 +43,7 @@ class Motor:
 
     def set_forwards(self):
         self.direction = 1
+
 
 def initBus():
     GPIO.setup(21, GPIO.OUT)
@@ -68,11 +70,12 @@ def initBus():
     bus.write_word_data(20, 68, 65039)
     bus.write_word_data(20, 64, 24065)
 
-def TOneMotor(motor,motorName):
+
+def TOneMotor(motor, motorName):
     print(motorName + " Starting")
     sleep(1)
     print(motorName + " Forwards")
-    motor.set_forwards();
+    motor.set_forwards()
     motor.set_power(SPEED_20)
     sleep(1)
     print(motorName + " Stop")
@@ -85,6 +88,7 @@ def TOneMotor(motor,motorName):
     print(motorName + " Stop")
     motor.stop()
     print(motorName + " Finished")
+
 
 def TAllMotor(speed):
     print("All Motors Starting with speed " + str(speed))
@@ -134,10 +138,10 @@ if __name__ == '__main__':
     right_front = Motor(44, 24)
     right_back = Motor(41, 20)
 
-    TOneMotor(left_front,"Left Front")
-    TOneMotor(left_back,"Left Back")
-    TOneMotor(right_front,"Right Front")
-    TOneMotor(right_back,"Right Back")
+    TOneMotor(left_front, "Left Front")
+    TOneMotor(left_back, "Left Back")
+    TOneMotor(right_front, "Right Front")
+    TOneMotor(right_back, "Right Back")
 
     TAllMotor(SPEED_40)
     TAllMotor(SPEED_80)
