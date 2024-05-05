@@ -71,7 +71,7 @@ def initBus():
     bus.write_word_data(20, 64, 24065)
 
 
-def TOneMotor(motor, motorName):
+def T1_One_Motor(motor, motorName):
     print(motorName + " Starting")
     sleep(1)
     print(motorName + " Forwards")
@@ -90,7 +90,7 @@ def TOneMotor(motor, motorName):
     print(motorName + " Finished")
 
 
-def TAllMotor(speed):
+def T2_All_Motors(speed):
     print("All Motors Starting with speed " + str(speed))
     sleep(1)
     print("All Motors Forwards")
@@ -98,22 +98,6 @@ def TAllMotor(speed):
     left_back.set_forwards()
     right_front.set_forwards()
     right_back.set_forwards()
-    left_front.set_power(speed)
-    left_back.set_power(speed)
-    right_front.set_power(speed)
-    right_back.set_power(speed)
-    sleep(1)
-    print("All Motors Stop")
-    left_front.stop()
-    left_back.stop()
-    right_front.stop()
-    right_back.stop()
-    sleep(1)
-    print("All Motors Backwards")
-    left_front.set_backwards()
-    left_back.set_backwards()
-    right_front.set_backwards()
-    right_back.set_backwards()
     left_front.set_power(speed)
     left_back.set_power(speed)
     right_front.set_power(speed)
@@ -127,30 +111,14 @@ def TAllMotor(speed):
     print("All Motors Finished with speed " + str(speed))
 
 
-def TAllMotorDifferentDirection(speed):
+def T3_All_Motors_Different_Direction(speed):
     print("All Motors Starting with speed " + str(speed))
     sleep(1)
-    print("All Motors Forwards")
+    print("All Motors Different Directions")
     left_front.set_forwards()
     left_back.set_backwards()
     right_front.set_forwards()
     right_back.set_backwards()
-    left_front.set_power(speed)
-    left_back.set_power(speed)
-    right_front.set_power(speed)
-    right_back.set_power(speed)
-    sleep(1)
-    print("All Motors Stop")
-    left_front.stop()
-    left_back.stop()
-    right_front.stop()
-    right_back.stop()
-    sleep(1)
-    print("All Motors Backwards")
-    left_front.set_backwards()
-    left_back.set_forwards()
-    right_front.set_backwards()
-    right_back.set_forwards()
     left_front.set_power(speed)
     left_back.set_power(speed)
     right_front.set_power(speed)
@@ -165,9 +133,11 @@ def TAllMotorDifferentDirection(speed):
 
 
 if __name__ == '__main__':
+    # Set up GPIO
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
+    # Initialize the bus to avoid errors
     initBus()
 
     left_front = Motor(45, 23)
@@ -176,16 +146,16 @@ if __name__ == '__main__':
     right_back = Motor(41, 20)
 
     # Test all motors individually
-    TOneMotor(left_front, "Left Front")
-    TOneMotor(left_back, "Left Back")
-    TOneMotor(right_front, "Right Front")
-    TOneMotor(right_back, "Right Back")
+    T1_One_Motor(left_front, "Left Front")
+    T1_One_Motor(left_back, "Left Back")
+    T1_One_Motor(right_front, "Right Front")
+    T1_One_Motor(right_back, "Right Back")
 
     # Test motor speeds
-    TAllMotor(SPEED_40)
-    TAllMotor(SPEED_80)
+    T2_All_Motors(SPEED_40)
+    T2_All_Motors(SPEED_80)
 
     # Test motors in different directions
-    TAllMotorDifferentDirection(SPEED_40)
+    T3_All_Motors_Different_Direction(SPEED_40)
 
     print("All Tests Finished")
