@@ -6,6 +6,8 @@ SENSOR_L = 15
 SENSOR_H = 0
 SENSOR_M = (SENSOR_H + SENSOR_L) / 2
 
+HAT_ADDR = 20
+
 
 #   GrayScale   SMBus regs      addr=20
 #   18  17  16
@@ -23,15 +25,15 @@ class Tracker:
         GPIO.setup(21, GPIO.IN)
 
     def read(self):
-        self.bus.write_word_data(20, self.left_reg, 0)
-        self.left = self.bus.read_byte(20)
-        self.bus.read_byte(20)
-        self.bus.write_word_data(20, self.middle_reg, 0)
-        self.middle = self.bus.read_byte(20)
-        self.bus.read_byte(20)
-        self.bus.write_word_data(20, self.right_reg, 0)
-        self.right = self.bus.read_byte(20)
-        self.bus.read_byte(20)
+        self.bus.write_word_data(HAT_ADDR, self.left_reg, 0)
+        self.left = self.bus.read_byte(HAT_ADDR)
+        # self.bus.read_byte(HAT_ADDR)
+        self.bus.write_word_data(HAT_ADDR, self.middle_reg, 0)
+        self.middle = self.bus.read_byte(HAT_ADDR)
+        # self.bus.read_byte(HAT_ADDR)
+        self.bus.write_word_data(HAT_ADDR, self.right_reg, 0)
+        self.right = self.bus.read_byte(HAT_ADDR)
+        # self.bus.read_byte(HAT_ADDR)
         return self.left, self.middle, self.right
 
 
