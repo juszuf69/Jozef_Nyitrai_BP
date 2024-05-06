@@ -21,12 +21,15 @@ class Tracker:
         GPIO.setup(21, GPIO.IN)
 
     def read(self):
+        # read the values from the left IR sensor
         self.bus.write_word_data(HAT_ADDR, self.left_reg, 0)
         self.left = self.bus.read_byte(HAT_ADDR)
         self.bus.read_byte(HAT_ADDR)
+        # read the values from the middle IR sensor
         self.bus.write_word_data(HAT_ADDR, self.middle_reg, 0)
         self.middle = self.bus.read_byte(HAT_ADDR)
         self.bus.read_byte(HAT_ADDR)
+        # read the values from the right IR sensor
         self.bus.write_word_data(HAT_ADDR, self.right_reg, 0)
         self.right = self.bus.read_byte(HAT_ADDR)
         self.bus.read_byte(HAT_ADDR)
@@ -66,13 +69,14 @@ def startTracker():
 
 
 if __name__ == '__main__':
+    # Initialize the GPIO
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-
+    # Initialize the I2C bus
     bus = SMBus(1)
     sleep(1)
     initBus(bus)
-
+    # Initialize the tracker
     tracker = Tracker(bus)
-
+    # Start the tracker
     startTracker()
