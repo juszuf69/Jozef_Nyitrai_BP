@@ -12,26 +12,26 @@ SENSOR_M = (SENSOR_H + SENSOR_L) / 2
 #   L   M   R
 
 class Tracker:
-    def __init__(self):
+    def __init__(self, bus):
         self.left = 0
         self.middle = 0
         self.right = 0
         self.left_reg = 18
         self.middle_reg = 17
         self.right_reg = 16
+        self.bus = bus
         GPIO.setup(21, GPIO.IN)
 
     def read(self):
-        bus = SMBus(1)
-        bus.write_word_data(20, self.left_reg, 0)
-        self.left = bus.read_byte(20)
-        bus.read_byte(20)
-        bus.write_word_data(20, self.middle_reg, 0)
-        self.middle = bus.read_byte(20)
-        bus.read_byte(20)
-        bus.write_word_data(20, self.right_reg, 0)
-        self.right = bus.read_byte(20)
-        bus.read_byte(20)
+        self.bus.write_word_data(20, self.left_reg, 0)
+        self.left = self.bus.read_byte(20)
+        self.bus.read_byte(20)
+        self.bus.write_word_data(20, self.middle_reg, 0)
+        self.middle = self.bus.read_byte(20)
+        self.bus.read_byte(20)
+        self.bus.write_word_data(20, self.right_reg, 0)
+        self.right = self.bus.read_byte(20)
+        self.bus.read_byte(20)
         return self.left, self.middle, self.right
 
 
