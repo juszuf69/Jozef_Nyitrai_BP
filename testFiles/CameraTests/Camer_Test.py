@@ -32,9 +32,10 @@ def find_centroid(image_converted, image_resized):
         # display the largest contour
         cv2.drawContours(image_resized, [c], -1, (0, 255, 0), 2)
         M = cv2.moments(c)
-        cx = int(M['m10'] / M['m00'])
-        cy = int(M['m01'] / M['m00'])
-        cv2.circle(image_resized, (cx, cy), 5, (0, 0, 255), -1)
+        if M['m00'] != 0:
+            cx = int(M['m10'] / M['m00'])
+            cy = int(M['m01'] / M['m00'])
+            cv2.circle(image_resized, (cx, cy), 5, (0, 0, 255), -1)
         return image_resized
 
 
