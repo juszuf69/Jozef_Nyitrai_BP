@@ -1,9 +1,7 @@
 from time import *
-import RPi.GPIO as GPIO
 import cv2
 import picamera
 from picamera.array import PiRGBArray
-from smbus import SMBus
 
 
 def followLine(camera, rawCapture):
