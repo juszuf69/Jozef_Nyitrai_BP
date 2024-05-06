@@ -7,18 +7,19 @@ STOP = 'test_Pictures/stop_line_image.jpg'
 
 file_name = LEFT_TURN
 
-# Capture a frame from the camera
+# read image file
 frame = cv2.imread(file_name)
 
 # Display the original image
 cv2.imshow('Original Image', frame)
 
+# Resize the image
 height, width = frame.shape[:2]
 roi_start = height // 4
 roi_end = 3 * height // 4
 frame = frame[roi_start:roi_end, :]
 
-# Display the original image with Roi
+# Display the original resized image
 cv2.imshow('Original Image Resized', frame)
 
 # Convert to grayscale, gaussian blur, and threshold
@@ -26,15 +27,12 @@ gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 blur = cv2.GaussianBlur(gray, (5, 5), 0)
 ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
 
-# Erode to eliminate noise, Dilate to restore eroded parts of image
-mask = cv2.erode(thresh1, None, iterations=2)
-mask = cv2.dilate(mask, None, iterations=2)
-
+processed_image = thresh1
 # Display the processed image
-cv2.imshow('Processed Image', mask)
+cv2.imshow('Processed Image', processed_image)
 
 # Find all contours in frame
-contours, hierarchy = cv2.findContours(mask.copy(), 1, cv2.CHAIN_APPROX_NONE)
+contours, hierarchy = cv2.findContours(processed_image.copy(), 1, cv2.CHAIN_APPROX_NONE)
 
 # Find largest contour and display the centroid
 if len(contours) > 0:
