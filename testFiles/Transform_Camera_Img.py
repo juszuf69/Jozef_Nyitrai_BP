@@ -1,7 +1,4 @@
 import cv2
-import numpy as np
-import picamera
-import time
 
 LEFT_TURN = 'test_Pictures/Lturn_image.jpg'
 RIGHT_TURN = 'test_Pictures/Rturn_image.jpg'
