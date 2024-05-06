@@ -75,7 +75,7 @@ def T2():
         cv2.imshow('Output Converted', image_converted)
         # Find all contours in frame
         image_centroid = find_centroid(image_converted, image)
-        if(image_centroid is None):
+        if image_centroid is None:
             print("No centroid found")
         else:
             cv2.imshow('Output with Centroid', image_centroid)
