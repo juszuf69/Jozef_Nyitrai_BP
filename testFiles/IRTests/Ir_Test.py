@@ -35,14 +35,12 @@ class Tracker:
         return self.left, self.middle, self.right
 
 
-def initBus():
+def initBus(bus):
     GPIO.setup(21, GPIO.OUT)
     GPIO.output(21, 0)
     sleep(0.01)
     GPIO.output(21, 1)
     sleep(0.01)
-    bus = SMBus(1)
-    sleep(1)
     bus.write_word_data(20, 67, 44804)
     bus.write_word_data(20, 71, 44804)
     bus.write_word_data(20, 67, 44804)
@@ -73,8 +71,10 @@ if __name__ == '__main__':
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
 
-    initBus()
+    bus = SMBus(1)
+    sleep(1)
+    initBus(bus)
 
-    tracker = Tracker()
+    tracker = Tracker(bus)
 
     followLine()
