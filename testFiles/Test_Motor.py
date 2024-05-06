@@ -109,7 +109,7 @@ def T2(speed):
     right_back.stop()
 
 
-def T3(speed):
+def T3():
     sleep(1)
     # set all motors different directions
     left_front.set_forwards()
@@ -117,10 +117,10 @@ def T3(speed):
     right_front.set_forwards()
     right_back.set_backwards()
     # start all motors
-    left_front.set_power(speed)
-    left_back.set_power(speed)
-    right_front.set_power(speed)
-    right_back.set_power(speed)
+    left_front.set_power(SPEED_20)
+    left_back.set_power(SPEED_20)
+    right_front.set_power(SPEED_20)
+    right_back.set_power(SPEED_20)
     sleep(1)
     # stop all motors
     left_front.stop()
@@ -151,4 +151,4 @@ if __name__ == '__main__':
     T2(SPEED_40)
     T2(SPEED_80)
     # Test motors in different directions
-    T3(SPEED_40)
+    T3()
