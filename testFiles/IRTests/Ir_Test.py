@@ -59,7 +59,7 @@ def initBus(bus):
     bus.write_word_data(20, 64, 24065)
 
 
-def startTracker():
+def Test():
     try:
         while True:
             print(tracker.read())
@@ -78,4 +78,4 @@ if __name__ == '__main__':
     # Initialize the tracker
     tracker = Tracker(bus)
     # Start the tracker
-    startTracker()
+    Test()
