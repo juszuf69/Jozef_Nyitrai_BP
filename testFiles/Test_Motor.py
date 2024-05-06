@@ -152,3 +152,5 @@ if __name__ == '__main__':
     T2(SPEED_80)
     # Test motors in different directions
     T3()
+    # Clean up GPIO
+    GPIO.cleanup()
