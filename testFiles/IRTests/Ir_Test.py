@@ -2,10 +2,6 @@ from time import *
 import RPi.GPIO as GPIO
 from smbus import SMBus
 
-SENSOR_L = 15
-SENSOR_H = 0
-SENSOR_M = (SENSOR_H + SENSOR_L) / 2
-
 HAT_ADDR = 20
 
 
