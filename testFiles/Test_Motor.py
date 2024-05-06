@@ -113,8 +113,8 @@ def T3():
     sleep(1)
     # set all motors different directions
     left_front.set_forwards()
-    left_back.set_backwards()
-    right_front.set_forwards()
+    left_back.set_forwards()
+    right_front.set_backwards()
     right_back.set_backwards()
     # start all motors
     left_front.set_power(SPEED_20)
