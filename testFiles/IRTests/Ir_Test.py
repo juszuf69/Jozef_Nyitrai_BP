@@ -18,7 +18,6 @@ class Tracker:
         self.middle_reg = 17
         self.right_reg = 16
         self.bus = bus
-        GPIO.setup(21, GPIO.IN)
 
     def read(self):
         # read the values from the left IR sensor
