@@ -27,13 +27,13 @@ class Tracker:
     def read(self):
         self.bus.write_word_data(HAT_ADDR, self.left_reg, 0)
         self.left = self.bus.read_byte(HAT_ADDR)
-        # self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
         self.bus.write_word_data(HAT_ADDR, self.middle_reg, 0)
         self.middle = self.bus.read_byte(HAT_ADDR)
-        # self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
         self.bus.write_word_data(HAT_ADDR, self.right_reg, 0)
         self.right = self.bus.read_byte(HAT_ADDR)
-        # self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
         return self.left, self.middle, self.right
 
 
