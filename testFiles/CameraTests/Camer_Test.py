@@ -79,11 +79,11 @@ def T2():
         rawCapture.truncate(0)
         if key == ord("q"):
             break
-    cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
     T1()
     cv2.waitKey(0)
+    cv2.destroyAllWindows()
     T2()
     cv2.destroyAllWindows()
