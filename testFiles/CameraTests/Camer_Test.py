@@ -5,7 +5,7 @@ RIGHT_TURN_IMAGE_PATH = 'test_Pictures/Rturn_image.jpg'
 STRAIGHT_IMAGE_PATH = 'test_Pictures/straight_line_image.jpg'
 STOP_IMAGE_PATH = 'test_Pictures/stop_line_image.jpg'
 
-OUT_PATH = 'test_Pictures/utput/'
+OUT_PATH = 'test_Pictures/output/'
 
 
 def resize_image(image):
