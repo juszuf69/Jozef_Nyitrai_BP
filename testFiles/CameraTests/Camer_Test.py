@@ -7,7 +7,7 @@ IMAGE_PATH = 'test_Pictures/Lturn_image.jpg'
 
 
 def crop_image(image):
-    height, width = image.shape[:2]
+    height = image.shape[0]
     roi_start = height // 4
     roi_end = 3 * height // 4
     image = image[roi_start:roi_end, :]
@@ -63,7 +63,7 @@ def T2():
     rawCapture = PiRGBArray(camera, size=(192, 112))
     sleep(0.1)
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        image = resize_image(frame.array)
+        image = crop_image(frame.array)
         # Display camera input
         cv2.imshow('Input Original', image)
         # Create key to break for loop
