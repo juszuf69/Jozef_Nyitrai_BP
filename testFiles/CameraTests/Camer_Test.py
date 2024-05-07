@@ -78,6 +78,7 @@ def T2():
             cv2.imshow('Output with Centroid', image_centroid)
         rawCapture.truncate(0)
         if key == ord("q"):
+            camera.close()
             break
 
 
