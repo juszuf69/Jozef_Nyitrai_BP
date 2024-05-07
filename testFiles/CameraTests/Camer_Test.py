@@ -17,7 +17,7 @@ def crop_image(image):
 def convert_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
+    ret, thresh1 = cv2.threshold(blur, 80, 255, cv2.THRESH_BINARY_INV)
     return thresh1
 
 
