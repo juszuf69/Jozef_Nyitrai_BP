@@ -42,21 +42,20 @@ def find_centroid(image_converted, image_resized):
 def T1():
     # read image file
     image_original = cv2.imread(IMAGE_PATH)
-    # Display and save the original images
+    # Display the original images
     cv2.imshow('Original Left Turn Image', image_original)
-    # Resize the images
+    # Resize the image
     image_resized = resize_image(image_original)
-    # Display the resized images
+    # Display the resized image
     cv2.imshow('Resized Left Turn Image', image_resized)
-    # Convert the images to use in the contour detection
+    # Convert the image to use in the contour detection
     image_converted = convert_image(image_resized)
-    # Display the converted images
+    # Display the converted image
     cv2.imshow('Converted Left Turn Image', image_converted)
-    # Find the centroid of the images
+    # Find the centroid of the image
     image_centroid = find_centroid(image_converted, image_resized)
-    # Display the images with the centroid
+    # Display the image with the centroid
     cv2.imshow('Left Turn Image with Centroid', image_centroid)
-    # Wait for user to press a key
 
 
 def T2():
