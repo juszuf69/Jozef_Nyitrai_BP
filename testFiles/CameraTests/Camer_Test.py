@@ -29,11 +29,11 @@ def find_centroid(image_converted, image_resized):
         largest_contour = max(contours, key=cv2.contourArea)
         # display the largest contour on the color image
         cv2.drawContours(image_resized, [largest_contour], -1, (0, 255, 0), 3)
-        M = cv2.moments(largest_contour)
-        if M['m00'] != 0:  # check if the area is not zero to avoid division by zero
-            cx = int(M['m10'] / M['m00'])
-            cy = int(M['m01'] / M['m00'])
-            cv2.circle(image_resized, (cx, cy), 5, (0, 0, 255), -1)
+        moments = cv2.moments(largest_contour)
+        if moments['m00'] != 0:  # check if the area is not zero to avoid division by zero
+            centroid_x = int(moments['m10'] / moments['m00'])
+            centroid_y = int(moments['m01'] / moments['m00'])
+            cv2.circle(image_resized, (centroid_x, centroid_y), 5, (0, 0, 255), 3)
         return image_resized
 
 
