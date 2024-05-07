@@ -64,15 +64,9 @@ def T2():
     rawCapture = PiRGBArray(camera, size=(192, 112))
     sleep(0.1)
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
-        image = crop_image(frame.array)
-        # Display camera input
-        cv2.imshow('Input Original', image)
-        # Create key to break for loop
         key = cv2.waitKey(1) & 0xFF
-        # convert the image
+        image = crop_image(frame.array)
         image_converted = convert_image(image)
-        cv2.imshow('Output Converted', image_converted)
-        # Find all contours in frame
         image_centroid = find_centroid(image_converted, image)
         if image_centroid is not None:
             cv2.imshow('Output with Centroid', image_centroid)
