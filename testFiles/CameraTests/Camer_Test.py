@@ -23,7 +23,7 @@ def convert_image(image):
 
 def find_centroid(image_converted, image_resized):
     # Find all contours in frame
-    contours, hierarchy = cv2.findContours(image_converted.copy(), 1, cv2.CHAIN_APPROX_NONE)
+    contours, hierarchy = cv2.findContours(image_converted, 1, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         # Find the largest contour area and image moments
         c = max(contours, key=cv2.contourArea)
