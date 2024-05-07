@@ -26,10 +26,10 @@ def find_centroid(image_converted, image_resized):
     contours, hierarchy = cv2.findContours(image_converted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         # Find the largest contour area and image moments
-        c = max(contours, key=cv2.contourArea)
+        largest_contour = max(contours, key=cv2.contourArea)
         # display the largest contour on the color image
-        cv2.drawContours(image_resized, [c], -1, (0, 255, 0), 2)
-        M = cv2.moments(c)
+        cv2.drawContours(image_resized, [largest_contour], -1, (0, 255, 0), 2)
+        M = cv2.moments(largest_contour)
         if M['m00'] != 0:  # check if the area is not zero to avoid division by zero
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
