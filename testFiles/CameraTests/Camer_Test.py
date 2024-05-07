@@ -17,24 +17,24 @@ def crop_image(image):
 def convert_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
-    ret, thresh1 = cv2.threshold(blur, 80, 255, cv2.THRESH_BINARY_INV)
-    return thresh1
+    ret, image_converted = cv2.threshold(blur, 80, 255, cv2.THRESH_BINARY_INV)
+    return image_converted
 
 
-def find_centroid(image_converted, image_resized):
+def find_centroid(image_converted):
     # Find all contours in frame
     contours, hierarchy = cv2.findContours(image_converted.copy(), 1, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         # Find the largest contour area and image moments
         c = max(contours, key=cv2.contourArea)
         # display the largest contour on the color image
-        cv2.drawContours(image_resized, [c], -1, (0, 255, 0), 2)
+        cv2.drawContours(image_converted, [c], -1, (0, 255, 0), 2)
         M = cv2.moments(c)
         if M['m00'] != 0:  # check if the area is not zero to avoid division by zero
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
-            cv2.circle(image_resized, (cx, cy), 5, (0, 0, 255), -1)
-        return image_resized
+            cv2.circle(image_converted, (cx, cy), 5, (0, 0, 255), -1)
+        return image_converted
 
 
 def T1():
@@ -51,9 +51,10 @@ def T1():
     # Display the converted image
     cv2.imshow('Converted Image', image_converted)
     # Find the centroid of the image
-    image_centroid = find_centroid(image_converted, image_cropped)
+    image_centroid = find_centroid(image_converted)
     # Display the image with the centroid
-    cv2.imshow('Image with Centroid', image_centroid)
+    if image_centroid is not None:
+        cv2.imshow('Output with Centroid', image_centroid)
 
 
 def T2():
@@ -72,7 +73,7 @@ def T2():
         image_converted = convert_image(image)
         cv2.imshow('Output Converted', image_converted)
         # Find all contours in frame
-        image_centroid = find_centroid(image_converted, image)
+        image_centroid = find_centroid(image_converted)
         if image_centroid is not None:
             cv2.imshow('Output with Centroid', image_centroid)
         rawCapture.truncate(0)
