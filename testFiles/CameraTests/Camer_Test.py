@@ -6,8 +6,7 @@ from picamera.array import PiRGBArray
 IMAGE_PATH = 'test_Pictures/Lturn_image.jpg'
 
 
-def resize_image(image):
-    # Resize the image
+def crop_image(image):
     height, width = image.shape[:2]
     roi_start = height // 4
     roi_end = 3 * height // 4
@@ -16,7 +15,6 @@ def resize_image(image):
 
 
 def convert_image(image):
-    # Convert the image to grayscale
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(gray, (5, 5), 0)
     ret, thresh1 = cv2.threshold(blur, 100, 255, cv2.THRESH_BINARY_INV)
@@ -29,10 +27,10 @@ def find_centroid(image_converted, image_resized):
     if len(contours) > 0:
         # Find the largest contour area and image moments
         c = max(contours, key=cv2.contourArea)
-        # display the largest contour
+        # display the largest contour on the color image
         cv2.drawContours(image_resized, [c], -1, (0, 255, 0), 2)
         M = cv2.moments(c)
-        if M['m00'] != 0:
+        if M['m00'] != 0:  # check if the area is not zero to avoid division by zero
             cx = int(M['m10'] / M['m00'])
             cy = int(M['m01'] / M['m00'])
             cv2.circle(image_resized, (cx, cy), 5, (0, 0, 255), -1)
@@ -43,19 +41,19 @@ def T1():
     # read image file
     image_original = cv2.imread(IMAGE_PATH)
     # Display the original images
-    cv2.imshow('Original Left Turn Image', image_original)
-    # Resize the image
-    image_resized = resize_image(image_original)
+    cv2.imshow('Original Image', image_original)
+    # Crop the image
+    image_cropped = crop_image(image_original)
     # Display the resized image
-    cv2.imshow('Resized Left Turn Image', image_resized)
+    cv2.imshow('Cropped Image', image_cropped)
     # Convert the image to use in the contour detection
-    image_converted = convert_image(image_resized)
+    image_converted = convert_image(image_cropped)
     # Display the converted image
-    cv2.imshow('Converted Left Turn Image', image_converted)
+    cv2.imshow('Converted Image', image_converted)
     # Find the centroid of the image
-    image_centroid = find_centroid(image_converted, image_resized)
+    image_centroid = find_centroid(image_converted, image_cropped)
     # Display the image with the centroid
-    cv2.imshow('Left Turn Image with Centroid', image_centroid)
+    cv2.imshow('Image with Centroid', image_centroid)
 
 
 def T2():
