@@ -33,7 +33,7 @@ def find_centroid(image_converted, image_resized):
         if moments['m00'] != 0:  # check if the area is not zero to avoid division by zero
             centroid_x = int(moments['m10'] / moments['m00'])
             centroid_y = int(moments['m01'] / moments['m00'])
-            cv2.circle(image_resized, (centroid_x, centroid_y), 5, (0, 0, 255), 3)
+            cv2.circle(image_resized, (centroid_x, centroid_y), 5, (0, 0, 255), -1)
         return image_resized
 
 
