@@ -158,6 +158,7 @@ def initBus(bus):
 
 
 def followLine(car, speed):
+    lost_read_count = 0
     try:
         while True:
             car.read()
@@ -169,6 +170,14 @@ def followLine(car, speed):
                 car.turn_right(speed)
             elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE and car.getTrackerCenter() < SENSOR_MIDDLE_VALUE and car.getTrackerRight() < SENSOR_MIDDLE_VALUE:
                 car.stop()
+            else:
+                lost_read_count += 1
+                if lost_read_count == 1:
+                    start_time = time()
+                if lost_read_count > 10:
+                    car.stop()
+                    print(time() - start_time)
+                    break
     except KeyboardInterrupt:
         car.stop()
 
