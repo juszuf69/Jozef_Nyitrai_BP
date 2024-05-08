@@ -181,8 +181,6 @@ def followLine(car, speed):
                 car.stop()
     except KeyboardInterrupt:
         car.stop()
-        sleep(1)
-        GPIO.cleanup()
 
 
 if __name__ == '__main__':
