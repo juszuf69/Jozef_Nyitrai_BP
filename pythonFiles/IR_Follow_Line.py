@@ -2,9 +2,9 @@ from time import *
 from smbus import SMBus
 import RPi.GPIO as GPIO
 
-SENSOR_LOW = 15
-SENSOR_HIGH = 0
-SENSOR_MIDDLE = (SENSOR_LOW + SENSOR_HIGH) / 2
+SENSOR_LOW_VALUE = 15
+SENSOR_HIGH_VALUE = 0
+SENSOR_MIDDLE_VALUE = (SENSOR_LOW_VALUE + SENSOR_HIGH_VALUE) / 2
 HAT_ADDR = 20
 
 #       MOTORS      SMBus regs      addr=20
@@ -94,16 +94,6 @@ class Car:
         self.right_front.set_power(power)
         self.right_back.set_power(power)
 
-    def backward(self, power):
-        self.left_front.set_backwards()
-        self.left_back.set_backwards()
-        self.right_front.set_backwards()
-        self.right_back.set_backwards()
-        self.left_front.set_power(power)
-        self.left_back.set_power(power)
-        self.right_front.set_power(power)
-        self.right_back.set_power(power)
-
     def turn_left(self, power):
         self.left_front.set_backwards()
         self.left_back.set_backwards()
@@ -171,16 +161,14 @@ def followLine(car, speed):
     try:
         while True:
             car.read()
-            if car.getTrackerLeft() > SENSOR_MIDDLE and car.getTrackerRight() > SENSOR_MIDDLE:
+            if car.getTrackerLeft() > SENSOR_MIDDLE_VALUE and car.getTrackerRight() > SENSOR_MIDDLE_VALUE:
                 car.forward(speed)
-            elif car.getTrackerLeft() < SENSOR_MIDDLE < car.getTrackerRight():
+            elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE < car.getTrackerRight():
                 car.turn_left(speed)
-            elif car.getTrackerRight() < SENSOR_MIDDLE < car.getTrackerLeft():
+            elif car.getTrackerRight() < SENSOR_MIDDLE_VALUE < car.getTrackerLeft():
                 car.turn_right(speed)
-            elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
+            elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE and car.getTrackerCenter() < SENSOR_MIDDLE_VALUE and car.getTrackerRight() < SENSOR_MIDDLE_VALUE:
                 car.stop()
-            else:
-                car.backward(speed)
     except KeyboardInterrupt:
         car.stop()
 
