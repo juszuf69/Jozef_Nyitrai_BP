@@ -95,6 +95,16 @@ class Car:
         self.right_front.set_power(power)
         self.right_back.set_power(power)
 
+    def backward(self, power):
+        self.left_front.set_backwards()
+        self.left_back.set_backwards()
+        self.right_front.set_backwards()
+        self.right_back.set_backwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
     def turn_left(self, power):
         self.left_front.set_backwards()
         self.left_back.set_backwards()
