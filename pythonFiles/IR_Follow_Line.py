@@ -162,7 +162,7 @@ def followLine(car, speed):
     try:
         while True:
             car.read()
-            if car.getTrackerLeft() > SENSOR_MIDDLE_VALUE and car.getTrackerRight() > SENSOR_MIDDLE_VALUE:
+            if car.getTrackerLeft() > SENSOR_MIDDLE_VALUE and car.getTrackerCenter() < SENSOR_MIDDLE_VALUE and car.getTrackerRight() > SENSOR_MIDDLE_VALUE:
                 car.forward(speed)
             elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE < car.getTrackerRight():
                 car.turn_left(speed)
