@@ -5,7 +5,7 @@ import RPi.GPIO as GPIO
 SENSOR_LOW_VALUE = 15
 SENSOR_HIGH_VALUE = 0
 SENSOR_MIDDLE_VALUE = (SENSOR_LOW_VALUE + SENSOR_HIGH_VALUE) / 2
-MAX_LOST_READS = 100
+MAX_LOST_READS = 300
 HAT_ADDR = 20
 
 #       MOTORS      SMBus regs      addr=20
@@ -164,21 +164,24 @@ def followLine(car, speed):
         while True:
             car.read()
             if car.getTrackerLeft() > SENSOR_MIDDLE_VALUE > car.getTrackerCenter() and car.getTrackerRight() > SENSOR_MIDDLE_VALUE:
+                lost_read_count = 0
                 car.forward(speed)
             elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE < car.getTrackerRight():
+                lost_read_count = 0
                 car.turn_left(speed)
             elif car.getTrackerRight() < SENSOR_MIDDLE_VALUE < car.getTrackerLeft():
+                lost_read_count = 0
                 car.turn_right(speed)
             elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE and car.getTrackerCenter() < SENSOR_MIDDLE_VALUE and car.getTrackerRight() < SENSOR_MIDDLE_VALUE:
+                lost_read_count = 0
                 car.stop()
             else:
                 lost_read_count += 1
-                if lost_read_count == 1:
-                    print(time())
                 if lost_read_count > MAX_LOST_READS:
                     car.stop()
-                    print(time())
-                    break
+                    car.backward(speed)
+                    sleep(1)
+                    car.stop()
     except KeyboardInterrupt:
         car.stop()
 
