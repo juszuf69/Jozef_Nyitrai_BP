@@ -1,7 +1,7 @@
 from time import *
 from smbus import SMBus
 import RPi.GPIO as GPIO
-import cv2
+import keyboard
 
 SENSOR_LOW = 15
 SENSOR_HIGH = 0
@@ -169,8 +169,10 @@ def initBus(bus):
 
 
 def followLine(car, speed):
-    key = cv2.waitKey(1) & 0xFF
     while True:
+        if keyboard.is_pressed('q'):  # if key 'q' is pressed
+            car.stop()
+            break  # finish the loop
         car.read()
         if car.getTrackerLeft() > SENSOR_MIDDLE and car.getTrackerRight() > SENSOR_MIDDLE:
             car.forward(speed)
@@ -180,9 +182,6 @@ def followLine(car, speed):
             car.turn_right(speed)
         elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
             car.stop()
-        if key == ord("q"):
-            car.stop()
-            break
 
 
 if __name__ == '__main__':
