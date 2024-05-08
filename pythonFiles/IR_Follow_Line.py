@@ -5,15 +5,10 @@ import RPi.GPIO as GPIO
 SENSOR_LOW_VALUE = 15
 SENSOR_HIGH_VALUE = 0
 SENSOR_MIDDLE_VALUE = (SENSOR_LOW_VALUE + SENSOR_HIGH_VALUE) / 2
-MAX_LOST_READS = 300
-HAT_ADDR = 20
 
-#       MOTORS      SMBus regs      addr=20
-#   LF  45  44  RF
-#   LB  40  41  RB
-#                   GPIO.OUT pins
-#   LF  23  24  RF
-#   LB  13  20  RB
+MAX_LOST_READS = 300
+
+HAT_ADDR = 20
 
 #   Speed Input values
 SPEED_0 = 0
@@ -27,10 +22,6 @@ SPEED_70 = 64259
 SPEED_80 = 14084
 SPEED_90 = 29444
 
-
-#   GrayScale   SMBus regs      addr=20
-#   18  17  16
-#   L   M   R
 
 class Motor:
     def __init__(self, reg, pin, bus):
