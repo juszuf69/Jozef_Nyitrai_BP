@@ -179,6 +179,8 @@ def followLine(car, speed):
                 car.turn_right(speed)
             elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
                 car.stop()
+            else:
+                car.backward(speed)
     except KeyboardInterrupt:
         car.stop()
 
