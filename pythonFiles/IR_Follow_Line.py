@@ -3,9 +3,10 @@ from smbus import SMBus
 import RPi.GPIO as GPIO
 import cv2
 
-SENSOR_L = 15
-SENSOR_H = 0
-SENSOR_M = (SENSOR_H + SENSOR_L) / 2
+SENSOR_LOW = 15
+SENSOR_HIGH = 0
+SENSOR_MIDDLE = int((SENSOR_LOW + SENSOR_HIGH) / 2)
+HAT_ADDR = 20
 
 #       MOTORS      SMBus regs      addr=20
 #   LF  45  44  RF
@@ -13,8 +14,8 @@ SENSOR_M = (SENSOR_H + SENSOR_L) / 2
 #                   GPIO.OUT pins
 #   LF  23  24  RF
 #   LB  13  20  RB
-#
-#   Input values
+
+#   Speed Input values
 SPEED_0 = 0
 SPEED_10 = 37634
 SPEED_20 = 52994
@@ -32,20 +33,19 @@ SPEED_90 = 29444
 #   L   M   R
 
 class Motor:
-    def __init__(self, reg, pin):
+    def __init__(self, reg, pin, bus):
         self.reg = reg
         self.pin = pin
+        self.bus = bus
         self.direction = 1
         GPIO.setup(self.pin, GPIO.OUT)
 
     def set_power(self, power):
-        bus = SMBus(1)
         GPIO.output(self.pin, self.direction)
-        bus.write_word_data(20, self.reg, power)
+        self.bus.write_word_data(HAT_ADDR, self.reg, power)
 
     def stop(self):
-        bus = SMBus(1)
-        bus.write_word_data(20, self.reg, 0)
+        self.bus.write_word_data(HAT_ADDR, self.reg, 0)
 
     def set_backwards(self):
         self.direction = 0
@@ -55,88 +55,101 @@ class Motor:
 
 
 class Tracker:
-    def __init__(self):
+    def __init__(self, bus):
         self.left = 0
-        self.middle = 0
+        self.center = 0
         self.right = 0
         self.left_reg = 18
-        self.middle_reg = 17
+        self.center_reg = 17
         self.right_reg = 16
-        GPIO.setup(21, GPIO.IN)
+        self.bus = bus
 
     def read(self):
-        bus = SMBus(1)
-        bus.write_word_data(20, self.left_reg, 0)
-        self.left = bus.read_byte(20)
-        bus.read_byte(20)
-        bus.write_word_data(20, self.middle_reg, 0)
-        self.middle = bus.read_byte(20)
-        bus.read_byte(20)
-        bus.write_word_data(20, self.right_reg, 0)
-        self.right = bus.read_byte(20)
-        bus.read_byte(20)
-        return self.left, self.middle, self.right
+        self.bus.write_word_data(HAT_ADDR, self.left_reg, 0)
+        self.left = self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
+        self.bus.write_word_data(HAT_ADDR, self.center_reg, 0)
+        self.center = self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
+        self.bus.write_word_data(HAT_ADDR, self.right_reg, 0)
+        self.right = self.bus.read_byte(HAT_ADDR)
+        self.bus.read_byte(HAT_ADDR)
+        return self.left, self.center, self.right
 
 
-def forward(power):
-    left_front.set_forwards()
-    left_back.set_forwards()
-    right_front.set_forwards()
-    right_back.set_forwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
+class Car:
+    def __init__(self, left_front, left_back, right_front, right_back, tracker):
+        self.left_front = left_front
+        self.left_back = left_back
+        self.right_front = right_front
+        self.right_back = right_back
+        self.tracker = tracker
+
+    def forward(self, power):
+        self.left_front.set_forwards()
+        self.left_back.set_forwards()
+        self.right_front.set_forwards()
+        self.right_back.set_forwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def backward(self, power):
+        self.left_front.set_backwards()
+        self.left_back.set_backwards()
+        self.right_front.set_backwards()
+        self.right_back.set_backwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def turn_left(self, power):
+        self.left_front.set_backwards()
+        self.left_back.set_backwards()
+        self.right_front.set_forwards()
+        self.right_back.set_forwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def turn_right(self, power):
+        self.left_front.set_forwards()
+        self.left_back.set_forwards()
+        self.right_front.set_backwards()
+        self.right_back.set_backwards()
+        self.left_front.set_power(power)
+        self.left_back.set_power(power)
+        self.right_front.set_power(power)
+        self.right_back.set_power(power)
+
+    def stop(self):
+        self.left_front.stop()
+        self.left_back.stop()
+        self.right_front.stop()
+        self.right_back.stop()
+
+    def read(self):
+        self.tracker.read()
+
+    def getTrackerLeft(self):
+        return self.tracker.left
+
+    def getTrackerCenter(self):
+        return self.tracker.center
+
+    def getTrackerRight(self):
+        return self.tracker.right
 
 
-def backward(power):
-    left_front.set_backwards()
-    left_back.set_backwards()
-    right_front.set_backwards()
-    right_back.set_backwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
-
-
-def turn_left(power):
-    left_front.set_backwards()
-    left_back.set_backwards()
-    right_front.set_forwards()
-    right_back.set_forwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
-
-
-def turn_right(power):
-    left_front.set_forwards()
-    left_back.set_forwards()
-    right_front.set_backwards()
-    right_back.set_backwards()
-    left_front.set_power(power)
-    left_back.set_power(power)
-    right_front.set_power(power)
-    right_back.set_power(power)
-
-
-def stop():
-    left_front.set_power(0)
-    left_back.set_power(0)
-    right_front.set_power(0)
-    right_back.set_power(0)
-
-
-def initBus():
+def initBus(bus):
     GPIO.setup(21, GPIO.OUT)
     GPIO.output(21, 0)
     sleep(0.01)
     GPIO.output(21, 1)
     sleep(0.01)
-    bus = SMBus(1)
-    sleep(1)
     bus.write_word_data(20, 67, 44804)
     bus.write_word_data(20, 71, 44804)
     bus.write_word_data(20, 67, 44804)
@@ -155,34 +168,39 @@ def initBus():
     bus.write_word_data(20, 64, 24065)
 
 
-def followLine(speed):
+def followLine(car, speed):
     key = cv2.waitKey(1) & 0xFF
     while True:
-        tracker.read()
-        if tracker.left > SENSOR_M and tracker.right > SENSOR_M:
-            forward(speed)
-        elif tracker.left < SENSOR_M < tracker.right:
-            turn_left(speed)
-        elif tracker.right < SENSOR_M < tracker.left:
-            turn_right(speed)
-        elif tracker.left < SENSOR_M and tracker.middle < SENSOR_M and tracker.right < SENSOR_M:
-            stop()
+        car.read()
+        if car.getTrackerLeft() > SENSOR_MIDDLE and car.getTrackerRight() > SENSOR_MIDDLE:
+            car.forward(speed)
+        elif car.getTrackerLeft() < SENSOR_MIDDLE < car.getTrackerRight():
+            car.turn_left(speed)
+        elif car.getTrackerRight() < SENSOR_MIDDLE < car.getTrackerLeft():
+            car.turn_right(speed)
+        elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
+            car.stop()
         if key == ord("q"):
-            stop()
+            car.stop()
             break
 
 
 if __name__ == '__main__':
+    # Initialize the GPIO
     GPIO.setmode(GPIO.BCM)
     GPIO.setwarnings(False)
-
-    #initBus()
-
-    left_front = Motor(45, 23)
-    left_back = Motor(40, 13)
-    right_front = Motor(44, 24)
-    right_back = Motor(41, 20)
-
-    tracker = Tracker()
-
-    followLine(SPEED_20)
+    # Initialize the I2C bus
+    bus = SMBus(1)
+    sleep(1)
+    initBus(bus)
+    # Initialize the motors
+    left_front = Motor(45, 23, bus)
+    left_back = Motor(40, 13, bus)
+    right_front = Motor(44, 24, bus)
+    right_back = Motor(41, 20, bus)
+    # Initialize the tracker
+    tracker = Tracker(bus)
+    # Initialize the car
+    car = Car(left_front, left_back, right_front, right_back, tracker)
+    # Follow the line
+    followLine(car, SPEED_20)
