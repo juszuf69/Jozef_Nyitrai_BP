@@ -173,10 +173,10 @@ def followLine(car, speed):
             else:
                 lost_read_count += 1
                 if lost_read_count == 1:
-                    start_time = time()
+                    print(time())
                 if lost_read_count > 10:
                     car.stop()
-                    print(time() - start_time)
+                    print(time())
                     break
     except KeyboardInterrupt:
         car.stop()
