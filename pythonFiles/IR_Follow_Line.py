@@ -1,7 +1,7 @@
 from time import *
 from smbus import SMBus
 import RPi.GPIO as GPIO
-import keyboard
+import curses
 
 SENSOR_LOW = 15
 SENSOR_HIGH = 0
@@ -169,19 +169,29 @@ def initBus(bus):
 
 
 def followLine(car, speed):
-    while True:
-        if keyboard.is_pressed('q'):  # if key 'q' is pressed
-            car.stop()
-            break  # finish the loop
-        car.read()
-        if car.getTrackerLeft() > SENSOR_MIDDLE and car.getTrackerRight() > SENSOR_MIDDLE:
-            car.forward(speed)
-        elif car.getTrackerLeft() < SENSOR_MIDDLE < car.getTrackerRight():
-            car.turn_left(speed)
-        elif car.getTrackerRight() < SENSOR_MIDDLE < car.getTrackerLeft():
-            car.turn_right(speed)
-        elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
-            car.stop()
+    stdscr = curses.initscr()
+    curses.cbreak()
+    stdscr.keypad(True)
+    try:
+        while True:
+            if stdscr.getch() == ord('q'):
+                car.stop()
+                break
+
+            car.read()
+            if car.getTrackerLeft() > SENSOR_MIDDLE and car.getTrackerRight() > SENSOR_MIDDLE:
+                car.forward(speed)
+            elif car.getTrackerLeft() < SENSOR_MIDDLE < car.getTrackerRight():
+                car.turn_left(speed)
+            elif car.getTrackerRight() < SENSOR_MIDDLE < car.getTrackerLeft():
+                car.turn_right(speed)
+            elif car.getTrackerLeft() < SENSOR_MIDDLE and car.getTrackerCenter() < SENSOR_MIDDLE and car.getTrackerRight() < SENSOR_MIDDLE:
+                car.stop()
+    finally:
+        curses.nocbreak()
+        stdscr.keypad(False)
+        curses.echo()
+        curses.endwin()
 
 
 if __name__ == '__main__':
