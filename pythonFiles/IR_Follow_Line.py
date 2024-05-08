@@ -1,11 +1,10 @@
 from time import *
 from smbus import SMBus
 import RPi.GPIO as GPIO
-import cv2
 
 SENSOR_LOW = 15
 SENSOR_HIGH = 0
-SENSOR_MIDDLE = int((SENSOR_LOW + SENSOR_HIGH) / 2)
+SENSOR_MIDDLE = (SENSOR_LOW + SENSOR_HIGH) / 2
 HAT_ADDR = 20
 
 #       MOTORS      SMBus regs      addr=20
@@ -182,6 +181,7 @@ def followLine(car, speed):
                 car.stop()
     except KeyboardInterrupt:
         car.stop()
+        sleep(1)
         GPIO.cleanup()
 
 
