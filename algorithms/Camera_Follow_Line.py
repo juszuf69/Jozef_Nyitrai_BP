@@ -154,7 +154,8 @@ def get_left_right_points(image):
         largest_contour = max(contours, key=cv2.contourArea)
         leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
         rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
-        return leftmost, rightmost
+        print(leftmost, rightmost)
+        return leftmost[1], rightmost[1]
 
 
 def followLine(car, speed):
@@ -170,7 +171,7 @@ def followLine(car, speed):
         image = convert_image(image)
         leftmost, rightmost = get_left_right_points(image)
         # check stop condition
-        if leftmost[0] == 0 and rightmost[0] == 191:
+        if leftmost == 0 and rightmost == 191:
             car.stop()
             break
         # Find centroid x of the line
