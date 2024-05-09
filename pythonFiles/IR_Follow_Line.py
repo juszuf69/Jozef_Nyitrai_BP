@@ -162,7 +162,6 @@ def followLine(car, speed):
     try:
         while True:
             car.read()
-            print(car.getTrackerLeft(), car.getTrackerCenter(), car.getTrackerRight())
             if car.getTrackerLeft() not in LINE and car.getTrackerCenter() in LINE and car.getTrackerRight() not in LINE:
                 lost_read_count = 0
                 car.forward(speed)
