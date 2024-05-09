@@ -6,7 +6,7 @@ SENSOR_LOW_VALUE = 15
 SENSOR_HIGH_VALUE = 0
 SENSOR_MIDDLE_VALUE = (SENSOR_LOW_VALUE + SENSOR_HIGH_VALUE) / 2
 
-MAX_LOST_READS = 300
+MAX_LOST_READS = 100
 
 HAT_ADDR = 20
 
@@ -186,7 +186,6 @@ def followLine(car, speed):
                     car.stop()
                     car.backward(speed)
                     sleep(stop_time - start_time)
-                    car.stop()
     except KeyboardInterrupt:
         car.stop()
 
