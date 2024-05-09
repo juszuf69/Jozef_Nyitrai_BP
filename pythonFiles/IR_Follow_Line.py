@@ -2,9 +2,8 @@ from time import *
 from smbus import SMBus
 import RPi.GPIO as GPIO
 
-SENSOR_LOW_VALUE = 15
-SENSOR_HIGH_VALUE = 0
-SENSOR_MIDDLE_VALUE = (SENSOR_LOW_VALUE + SENSOR_HIGH_VALUE) / 2
+SENSOR_LOW = range(0, 4)
+SENSOR_HIGH = range(13, 17)
 
 MAX_LOST_READS = 100
 
@@ -164,16 +163,16 @@ def followLine(car, speed):
     try:
         while True:
             car.read()
-            if car.getTrackerLeft() > SENSOR_MIDDLE_VALUE > car.getTrackerCenter() and car.getTrackerRight() > SENSOR_MIDDLE_VALUE:
+            if car.getTrackerLeft() in SENSOR_HIGH and car.getTrackerCenter() in SENSOR_LOW and car.getTrackerRight() in SENSOR_HIGH:
                 lost_read_count = 0
                 car.forward(speed)
-            elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE < car.getTrackerRight():
+            elif car.getTrackerLeft() in SENSOR_LOW and car.getTrackerRight() in SENSOR_HIGH:
                 lost_read_count = 0
                 car.turn_left(speed)
-            elif car.getTrackerRight() < SENSOR_MIDDLE_VALUE < car.getTrackerLeft():
+            elif car.getTrackerRight() in SENSOR_LOW and car.getTrackerLeft() in SENSOR_HIGH:
                 lost_read_count = 0
                 car.turn_right(speed)
-            elif car.getTrackerLeft() < SENSOR_MIDDLE_VALUE and car.getTrackerCenter() < SENSOR_MIDDLE_VALUE and car.getTrackerRight() < SENSOR_MIDDLE_VALUE:
+            elif car.getTrackerLeft() in SENSOR_LOW and car.getTrackerCenter() in SENSOR_LOW and car.getTrackerRight() in SENSOR_LOW:
                 lost_read_count = 0
                 car.stop()
             else:
