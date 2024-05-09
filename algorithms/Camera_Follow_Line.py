@@ -155,10 +155,11 @@ def get_left_right_points(image):
         leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
         rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
         print(leftmost, rightmost)
-        return leftmost[1], rightmost[1]
+        return leftmost[0], rightmost[0]
 
 
 def followLine(car, speed):
+    first = True
     camera = picamera.PiCamera()
     camera.resolution = (192, 112)
     camera.framerate = 30
@@ -172,10 +173,11 @@ def followLine(car, speed):
         cv2.imshow("image", image)
         leftmost, rightmost = get_left_right_points(image)
         # check stop condition
-        if leftmost == 0 and rightmost == 191:
+        if leftmost == 0 and rightmost == 191 and not first:
             # car.stop()
             print("break")
             break
+        first = False
         # Find centroid x of the line
         centroid_x = find_centroid(image)
         if centroid_x is not None:
@@ -194,7 +196,7 @@ def followLine(car, speed):
 
         rawCapture.truncate(0)
 
-    cv2.destroyAllWindows()
+    #cv2.destroyAllWindows()
 
 
 if __name__ == "__main__":
