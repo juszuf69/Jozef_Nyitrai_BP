@@ -163,6 +163,7 @@ def followLine(car, speed):
     try:
         while True:
             car.read()
+            pritn(car.getTrackerLeft(), car.getTrackerCenter(), car.getTrackerRight())
             if car.getTrackerLeft() in SENSOR_HIGH and car.getTrackerCenter() in SENSOR_LOW and car.getTrackerRight() in SENSOR_HIGH:
                 lost_read_count = 0
                 car.forward(speed)
