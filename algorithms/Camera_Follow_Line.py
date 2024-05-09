@@ -161,12 +161,10 @@ def followLine(car, speed):
     sleep(0.1)
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = crop_image(frame.array)
-        # Create key to break for loop
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
         cv2.imshow("image", image)
         leftmost, rightmost, centroid_x = find_centroid(image)
-        # check stop condition
         if leftmost == 0 and rightmost == 191 and not first:
             car.stop()
             break
@@ -181,9 +179,7 @@ def followLine(car, speed):
         if key == ord("q"):
             car.stop()
             break
-
         rawCapture.truncate(0)
-
     cv2.destroyAllWindows()
 
 
