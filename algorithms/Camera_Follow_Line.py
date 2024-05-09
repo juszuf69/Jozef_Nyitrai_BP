@@ -157,6 +157,8 @@ def get_left_right_points(image):
         if leftmost is not None and rightmost is not None:
             return leftmost[0], rightmost[0]
         return 0, 191
+    else:
+        return 0, 191
 
 
 def followLine(car, speed):
