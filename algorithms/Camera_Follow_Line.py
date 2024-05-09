@@ -169,6 +169,7 @@ def followLine(car, speed):
         # Create key to break for loop
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
+        cv2.imshow("image", image)
         leftmost, rightmost = get_left_right_points(image)
         # check stop condition
         if leftmost == 0 and rightmost == 191:
