@@ -154,9 +154,7 @@ def get_left_right_points(image):
         largest_contour = max(contours, key=cv2.contourArea)
         leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
         rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
-        if leftmost is not None and rightmost is not None:
-            return leftmost[0], rightmost[0]
-        return 0, 191
+        return leftmost[0], rightmost[0]
     else:
         return 0, 191
 
