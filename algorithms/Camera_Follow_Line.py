@@ -163,7 +163,7 @@ def followLine(car, speed):
         image = crop_image(frame.array)
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
-        cv2.imshow("image", image)
+        # cv2.imshow("image", image)        # Uncomment this line to see the processed image
         leftmost, rightmost, centroid_x = find_centroid(image)
         if leftmost == 0 and rightmost == 191 and not first:
             car.stop()
