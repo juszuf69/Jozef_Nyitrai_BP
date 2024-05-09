@@ -178,7 +178,7 @@ def followLine(car, speed):
                 lost_read_count += 1
                 if lost_read_count == 1:
                     start_time = time()
-                if lost_read_count > MAX_LOST_READS:
+                if lost_read_count >= MAX_LOST_READS:
                     lost_read_count = 0
                     stop_time = time()
                     car.stop()
