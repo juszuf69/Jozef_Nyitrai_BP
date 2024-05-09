@@ -156,7 +156,7 @@ def get_left_right_points(image):
         rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
         return leftmost[0], rightmost[0]
     else:
-        return 0, 191
+        return 'noLine', 'noLine'
 
 
 def followLine(car, speed):
@@ -177,6 +177,8 @@ def followLine(car, speed):
         if leftmost == 0 and rightmost == 191 and not first:
             car.stop()
             break
+        elif leftmost == 'noLine' and rightmost == 'noLine' and not first:
+            car.backward(speed)
         first = False
         # Find centroid x of the line
         centroid_x = find_centroid(image)
