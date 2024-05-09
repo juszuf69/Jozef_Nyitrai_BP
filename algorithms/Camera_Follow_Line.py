@@ -172,19 +172,23 @@ def followLine(car, speed):
         leftmost, rightmost = get_left_right_points(image)
         # check stop condition
         if leftmost == 0 and rightmost == 191:
-            car.stop()
+            # car.stop()
+            print("break")
             break
         # Find centroid x of the line
         centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
-                car.turn_right(speed)
+                # car.turn_right(speed)
+                print("turn right", centroid_x)
             if 130 > centroid_x > 60:
-                car.forward(speed)
+                # car.forward(speed)
+                print("forward", centroid_x)
             if centroid_x <= 60:
-                car.turn_left(speed)
+                # car.turn_left(speed)
+                print("turn left", centroid_x)
         if key == ord("q"):
-            car.stop()
+            # car.stop()
             break
 
         rawCapture.truncate(0)
