@@ -142,21 +142,14 @@ def find_centroid(image_converted):
     contours, hierarchy = cv2.findContours(image_converted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         largest_contour = max(contours, key=cv2.contourArea)
+        leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
+        rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
         moments = cv2.moments(largest_contour)
         if moments['m00'] != 0:  # check if the area is not zero to avoid division by zero
             centroid_x = int(moments['m10'] / moments['m00'])
-            return centroid_x
-
-
-def get_left_right_points(image):
-    contours, hierarchy = cv2.findContours(image, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
-    if len(contours) > 0:
-        largest_contour = max(contours, key=cv2.contourArea)
-        leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
-        rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
-        return leftmost[0], rightmost[0]
-    else:
-        return 0, 191
+            return leftmost[0], rightmost[0], centroid_x
+        return leftmost[0], rightmost[0], None
+    return 0, 191, None
 
 
 def followLine(car, speed):
@@ -172,14 +165,12 @@ def followLine(car, speed):
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
         cv2.imshow("image", image)
-        leftmost, rightmost = get_left_right_points(image)
+        leftmost, rightmost, centroid_x = find_centroid(image)
         # check stop condition
         if leftmost == 0 and rightmost == 191 and not first:
             car.stop()
             break
         first = False
-        # Find centroid x of the line
-        centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
                 car.turn_right(speed)
