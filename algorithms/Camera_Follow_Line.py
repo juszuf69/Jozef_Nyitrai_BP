@@ -153,7 +153,7 @@ def find_centroid(image_converted):
 
 
 def followLine(car, speed):
-    first = True
+    first_contour = True
     camera = picamera.PiCamera()
     camera.resolution = (192, 112)
     camera.framerate = 30
@@ -165,10 +165,10 @@ def followLine(car, speed):
         image = convert_image(image)
         # cv2.imshow("image", image)        # Uncomment this line to see the processed image
         leftmost, rightmost, centroid_x = find_centroid(image)
-        if leftmost == 0 and rightmost == 191 and not first:
+        if leftmost == 0 and rightmost == 191 and not first_contour:
             car.stop()
             break
-        first = False
+        first_contour = False
         if centroid_x is not None:
             if centroid_x >= 130:
                 car.turn_right(speed)
