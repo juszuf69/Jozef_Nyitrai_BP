@@ -170,12 +170,12 @@ def followLine(car, speed):
             break
         first_contour = False
         if centroid_x is not None:
-            if centroid_x >= 130:
-                car.turn_right(speed)
-            if 130 > centroid_x > 60:
-                car.forward(speed)
-            if centroid_x <= 60:
+            if centroid_x <= 80:
                 car.turn_left(speed)
+            if centroid_x >= 110:
+                car.turn_right(speed)
+            else:
+                car.forward(speed)
         if key == ord("q"):
             car.stop()
             break
