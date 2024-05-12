@@ -164,21 +164,16 @@ def followLine(car, speed):
         centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
-                # car.turn_right(speed)
-                print("turn right")
+                car.turn_right(speed)
             if 130 > centroid_x > 60:
-                # car.forward(speed)
-                print("forward")
+                car.forward(speed)
             if centroid_x <= 60:
-                # car.turn_left(speed)
-                print("turn left")
+                car.turn_left(speed)
         else:
-            # car.stop()
-            print("stop")
+            car.stop()
             break
         if key == ord("q"):
-            # car.stop()
-            print("Pressed q, stopping the car.")
+            car.stop()
             break
         rawCapture.truncate(0)
     cv2.destroyAllWindows()
@@ -191,7 +186,7 @@ if __name__ == "__main__":
     # Initialize I2C bus
     bus = SMBus(1)
     sleep(1)
-    # initBus(bus)
+    initBus(bus)
     # Initialize motors
     left_front = Motor(45, 23, bus)
     left_back = Motor(40, 13, bus)
