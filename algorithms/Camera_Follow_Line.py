@@ -157,10 +157,9 @@ def followLine(car, speed):
     sleep(0.1)
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = crop_image(frame.array)
-        # Create key to break for loop
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
-        # Find centroid x of the line
+        cv2.imshow("Image", image)
         centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
@@ -175,9 +174,7 @@ def followLine(car, speed):
         if key == ord("q"):
             car.stop()
             break
-
         rawCapture.truncate(0)
-
     cv2.destroyAllWindows()
 
 
