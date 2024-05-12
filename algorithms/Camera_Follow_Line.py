@@ -142,18 +142,14 @@ def find_centroid(image_converted):
     contours, hierarchy = cv2.findContours(image_converted, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
     if len(contours) > 0:
         largest_contour = max(contours, key=cv2.contourArea)
-        leftmost = tuple(largest_contour[largest_contour[:, :, 0].argmin()][0])
-        rightmost = tuple(largest_contour[largest_contour[:, :, 0].argmax()][0])
         moments = cv2.moments(largest_contour)
         if moments['m00'] != 0:  # check if the area is not zero to avoid division by zero
             centroid_x = int(moments['m10'] / moments['m00'])
-            return leftmost[0], rightmost[0], centroid_x
-        return leftmost[0], rightmost[0], None
-    return 0, 191, None
+            return centroid_x
+    return None
 
 
 def followLine(car, speed):
-    first_contour = True
     camera = picamera.PiCamera()
     camera.resolution = (192, 112)
     camera.framerate = 30
@@ -161,25 +157,27 @@ def followLine(car, speed):
     sleep(0.1)
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = crop_image(frame.array)
+        # Create key to break for loop
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
-        # cv2.imshow("image", image)        # Uncomment this line to see the processed image
-        leftmost, rightmost, centroid_x = find_centroid(image)
-        if leftmost == 0 and rightmost == 191 and not first_contour:
+        # Find centroid x of the line
+        centroid_x = find_centroid(image)
+        if centroid_x is not None:
+            if centroid_x >= 130:
+                car.turn_right(speed)
+            if 130 > centroid_x > 60:
+                car.forward(speed)
+            if centroid_x <= 60:
+                car.turn_left(speed)
+        else:
             car.stop()
             break
-        first_contour = False
-        if centroid_x is not None:
-            if centroid_x <= 80:
-                car.turn_left(speed)
-            if centroid_x >= 110:
-                car.turn_right(speed)
-            else:
-                car.forward(speed)
         if key == ord("q"):
             car.stop()
             break
+
         rawCapture.truncate(0)
+
     cv2.destroyAllWindows()
 
 
