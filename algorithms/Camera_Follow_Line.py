@@ -155,7 +155,6 @@ def followLine(car, speed):
     camera.framerate = 30
     rawCapture = PiRGBArray(camera, size=(192, 112))
     sleep(0.1)
-    t1 = time()
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = crop_image(frame.array)
         cv2.imshow("Image1", frame.array)
@@ -171,11 +170,9 @@ def followLine(car, speed):
                 car.turn_left(speed)
         else:
             car.stop()
-            print(time() - t1)
             break
         if key == ord("q"):
             car.stop()
-            print(time() - t1)
             break
         rawCapture.truncate(0)
     cv2.destroyAllWindows()
