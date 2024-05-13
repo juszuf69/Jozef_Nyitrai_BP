@@ -155,12 +155,13 @@ def followLine(car, speed):
     camera.framerate = 30
     rawCapture = PiRGBArray(camera, size=(192, 112))
     sleep(0.1)
+    t1 = time()
     for frame in camera.capture_continuous(rawCapture, format="bgr", use_video_port=True):
         image = crop_image(frame.array)
-        cv2.imshow("Image1", image)
+        cv2.imshow("Image1", frame.array)
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
-        cv2.imshow("Image2", image)
+        #cv2.imshow("Image2", image)
         centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
@@ -171,9 +172,11 @@ def followLine(car, speed):
                 car.turn_left(speed)
         else:
             car.stop()
+            print(time() - t1)
             break
         if key == ord("q"):
             car.stop()
+            print(time() - t1)
             break
         rawCapture.truncate(0)
     cv2.destroyAllWindows()
@@ -194,5 +197,5 @@ if __name__ == "__main__":
     right_back = Motor(41, 20, bus)
     # initialize car
     car = Car(left_front, left_back, right_front, right_back)
-    followLine(car, SPEED_20)
+    followLine(car, SPEED_80)
     GPIO.cleanup()
