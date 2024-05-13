@@ -161,7 +161,6 @@ def followLine(car, speed):
         cv2.imshow("Image1", frame.array)
         key = cv2.waitKey(1) & 0xFF
         image = convert_image(image)
-        #cv2.imshow("Image2", image)
         centroid_x = find_centroid(image)
         if centroid_x is not None:
             if centroid_x >= 130:
