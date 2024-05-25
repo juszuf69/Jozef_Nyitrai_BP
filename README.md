@@ -124,6 +124,8 @@ Uistite sa, že máte nainštalované všetky závislosti pred spustením testov
 pip install -r requirements.txt
 ```
 
+Uistite sa, že Picar 4WD HAT modul je zapnutý a že napájanie je dostatočne (min. 6V) nabité pre správnu funkciu.
+
 ## Autor
 
 - **Jozef Nyitrai** - [juszuf69](https://github.com/juszuf69)
