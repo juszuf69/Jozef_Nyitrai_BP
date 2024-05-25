@@ -66,11 +66,11 @@ Ak sa všetky tri fázy testu vykonajú správne, motory fungujú správne.
 
 ### Test Kamery
 
-Prejdite do adresára `camera_test` a spustite testovací skript:
+Prejdite do adresára `CameraTest` a spustite testovací skript:
 
 ```bash
-cd test_dir/camera_test
-python test.py
+cd testFiles/CameraTest
+python Camera_Test.py
 ```
 
 Testovací skript funguje nasledovne:
@@ -80,7 +80,7 @@ Testovací skript funguje nasledovne:
 - Z prvej fázy do druhej prejdete stlačením klávesy q.
 - Z druhej fázy ukončíte program stlačením klávesy q.
 
-Testovací skript používa obrázky z adresára `test_pictures` a výstupy ukladá do adresára `output`.
+Testovací skript používa obrázky z adresára `test_Pictures` a výstupy ukladá do adresára `output`.
 
 ### Test IR Senzora
 
@@ -104,7 +104,7 @@ Prejdite do adresára `algorithms` a spustite program na sledovanie čiary pomoc
 
 ```bash
 cd algorithms
-python camera_line_follower.py
+python Camera_Follow_Line.py
 ```
 
 ### Program na Sledovanie Čiary Pomocou IR Senzorov
@@ -113,7 +113,7 @@ Prejdite do adresára `algorithms` a spustite program na sledovanie čiary pomoc
 
 ```bash
 cd algorithms
-python ir_line_follower.py
+python IR_Follow_Line.py
 ```
 
 ## Dodatočné Informácie
