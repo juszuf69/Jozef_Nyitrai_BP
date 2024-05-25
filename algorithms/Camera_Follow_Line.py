@@ -193,5 +193,5 @@ if __name__ == "__main__":
     right_back = Motor(41, 20, bus)
     # initialize car
     car = Car(left_front, left_back, right_front, right_back)
-    followLine(car, SPEED_80)
+    followLine(car, SPEED_30)
     GPIO.cleanup()

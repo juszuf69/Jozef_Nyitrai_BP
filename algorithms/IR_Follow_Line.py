@@ -211,4 +211,4 @@ if __name__ == '__main__':
     # Initialize the car
     car = Car(left_front, left_back, right_front, right_back, tracker)
     # Follow the line
-    followLine(car, SPEED_20)
+    followLine(car, SPEED_50)
